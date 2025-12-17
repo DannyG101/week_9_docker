@@ -8,6 +8,8 @@ app = FastAPI()
 
 DB_PATH = Path("db/shopping_list.json")
 
+DB_BACKUP_PATH = Path("data/backup_shopping_list.json")
+
 class Item(BaseModel):
     name: str
     quantity: int
@@ -19,12 +21,27 @@ def check_database_exists():
         raise FileNotFoundError(f"Database does not exist: {DB_PATH}")
 
 
+def check_backup_database_exists():
+    if not DB_BACKUP_PATH.exists():
+        print(f"ERROR: Backup Database does not exist")
+        raise FileNotFoundError(f"Backup Database does not exist: {DB_PATH}")
+
+
 def load_database():
     with open(DB_PATH, "r") as f:
         return json.load(f)
 
+
+def load_backup_database():
+    with open(DB_BACKUP_PATH, "r") as f:
+        return json.load(f)
+
 def save_database(data):
     with open(DB_PATH, "w") as f:
+        json.dump(data, f, indent=2)
+
+def save_backup_database(data):
+    with open(DB_BACKUP_PATH, "w") as f:
         json.dump(data, f, indent=2)
 
 
@@ -49,6 +66,23 @@ async def create_item(item: Item):
         "item_id": item_id,
         "item": current_item
             }
+
+
+@app.get("/backup")
+async def read_backup():
+    db = load_backup_database()
+    return db
+
+@app.post("/backup/save")
+def save_backup():
+    check_database_exists()
+    check_backup_database_exists()
+    volume_db = load_database()
+    save_backup_database(volume_db)
+    return {
+        "message": "Items backed up successfully",
+        "Backup list": volume_db
+    }
 
 
 if __name__ == "__main__":

@@ -6,3 +6,6 @@ venv/
 db/*.json
 db/*.shopping_list
 
+data
+data/*.json
+data/*.backup_shopping_list
