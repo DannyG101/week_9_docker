@@ -1,0 +1,8 @@
+.git
+.gitignore
+.env
+.venv
+venv/
+db/*.json
+db/*.shopping_list
+
