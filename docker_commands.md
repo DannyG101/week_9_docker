@@ -35,12 +35,12 @@ docker run -d -p 8000:8000 --name container_1 -v fastapi-db:/app/db shopping-ser
 ### Build the image
 
 ```bash
-
+docker build -t shopping-server2:v1 .
 ```
 
 ### Run the container
 
 ```bash
-
+docker run -d -p 8001:8000 --name container_2 -v fastapi-db:/app/db shopping-server2:v1
 ```
 
